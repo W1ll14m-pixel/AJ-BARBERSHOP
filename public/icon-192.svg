@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="36" fill="#0a0a0a"/>
+  <g transform="translate(96,90) rotate(-45)">
+    <ellipse cx="-7" cy="-36" rx="6" ry="28" fill="#ffffff"/>
+    <circle cx="-7" cy="-7" r="9" fill="none" stroke="#ffffff" stroke-width="5"/>
+    <circle cx="-7" cy="-7" r="3" fill="#0a0a0a"/>
+    <ellipse cx="7" cy="-36" rx="6" ry="28" fill="#ffffff"/>
+    <circle cx="7" cy="-7" r="9" fill="none" stroke="#ffffff" stroke-width="5"/>
+    <circle cx="7" cy="-7" r="3" fill="#0a0a0a"/>
+    <ellipse cx="-12" cy="34" rx="9" ry="22" fill="#ffffff"/>
+    <ellipse cx="12" cy="34" rx="9" ry="22" fill="#ffffff"/>
+    <circle cx="0" cy="0" r="4" fill="#ffffff"/>
+  </g>
+  <text x="96" y="178"
+        font-family="Georgia, serif"
+        font-size="22"
+        font-weight="700"
+        fill="#ffffff"
+        text-anchor="middle"
+        letter-spacing="5">AJ</text>
+</svg>
