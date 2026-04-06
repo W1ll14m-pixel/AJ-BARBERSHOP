@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutGrid, Users, Scissors, CalendarDays, BarChart2 } from 'lucide-react';
+import { LayoutGrid, Users, Scissors, CalendarDays, BarChart2, ClipboardList } from 'lucide-react';
 
 const NAV_ITEMS = [
   { to: '/',          icon: LayoutGrid,   label: 'Inicio'    },
@@ -7,11 +7,12 @@ const NAV_ITEMS = [
   { to: '/clientes',  icon: Users,        label: 'Clientes'  },
   { to: '/barberos',  icon: Scissors,     label: 'Barberos'  },
   { to: '/citas',     icon: CalendarDays, label: 'Citas'     },
+  { to: '/tareas',    icon: ClipboardList, label: 'Tareas'   },
   { to: '/reportes',  icon: BarChart2,    label: 'Reportes'  },
 ];
 
 // eslint-disable-next-line no-unused-vars
-const ICONS = { LayoutGrid, Users, Scissors, CalendarDays, BarChart2 };
+const ICONS = { LayoutGrid, Users, Scissors, CalendarDays, ClipboardList, BarChart2 };
 
 export default function BottomNav() {
   return (

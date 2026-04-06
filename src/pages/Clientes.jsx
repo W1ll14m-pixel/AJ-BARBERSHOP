@@ -9,24 +9,134 @@ const EMPTY_FORM = { nombre: '', telefono: '', notas: '' };
 
 function ClienteForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState(initial || EMPTY_FORM);
-  const set = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (!form.nombre.trim()) return;
+  /**
+   * Maneja cambios en los campos del formulario
+   * @param {string} fieldName - Nombre del campo a actualizar
+   */
+  const handleInputChange = (fieldName) => (event) => {
+    const newValue = event.target.value;
+    setForm(previousForm => ({
+      ...previousForm,
+      [fieldName]: newValue,
+    }));
+  };
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    const nombre = form.nombre.trim();
+    if (!nombre) return;
+
     onSave(form);
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <Field label="Nombre completo" value={form.nombre} onChange={set('nombre')} placeholder="Carlos Mamani" required />
-      <Field label="Teléfono" type="tel" value={form.telefono} onChange={set('telefono')} placeholder="70000000" />
-      <TextareaField label="Notas" value={form.notas} onChange={set('notas')} placeholder="Prefiere corte tipo A, alergias..." />
+      <Field
+        label="Nombre completo"
+        value={form.nombre}
+        onChange={handleInputChange('nombre')}
+        placeholder="Carlos Mamani"
+        required
+      />
+      <Field
+        label="Teléfono"
+        type="tel"
+        value={form.telefono}
+        onChange={handleInputChange('telefono')}
+        placeholder="70000000"
+      />
+      <TextareaField
+        label="Notas"
+        value={form.notas}
+        onChange={handleInputChange('notas')}
+        placeholder="Prefiere corte tipo A, alergias..."
+      />
       <div className="flex gap-3 pt-1">
-        <BtnOutline type="button" className="flex-1" onClick={onCancel}>Cancelar</BtnOutline>
-        <BtnPrimary type="submit" className="flex-1">Guardar</BtnPrimary>
+        <BtnOutline type="button" className="flex-1" onClick={onCancel}>
+          Cancelar
+        </BtnOutline>
+        <BtnPrimary type="submit" className="flex-1">
+          Guardar
+        </BtnPrimary>
       </div>
     </form>
+  );
+}
+
+/**
+ * Componente para mostrar el historial de servicios de un cliente
+ */
+function ClienteHistorial({ cliente, registros, servicios, barberos }) {
+  const historial = useMemo(
+    () => registros
+      .filter(registro => registro.clienteId === cliente.id)
+      .sort((a, b) => new Date(b.fin) - new Date(a.fin)),
+    [registros, cliente.id]
+  );
+
+  const totalGastado = historial.reduce((sum, registro) => sum + (registro.cobrado || 0), 0);
+
+  if (historial.length === 0) return null;
+
+  return (
+    <div>
+      <p className="text-[10px] uppercase tracking-widest text-[#a0a0a0] font-semibold mb-3">
+        Historial ({historial.length} visitas)
+      </p>
+      <div className="space-y-2">
+        {historial.slice(0, 6).map(registro => {
+          const servicio = getServicioById(servicios, registro.servicioId);
+          const barbero = getBarberoById(barberos, registro.barberoId);
+          return (
+            <div
+              key={registro.id}
+              className="flex items-center justify-between py-2 border-b border-[#f4f4f4] last:border-0"
+            >
+              <div>
+                <p className="text-[13px] font-medium text-[#0a0a0a]">
+                  {servicio?.nombre || 'Servicio'}
+                </p>
+                <p className="text-[11px] text-[#a0a0a0]">
+                  {barbero?.nombre} · {formatFecha(registro.fin)}
+                </p>
+              </div>
+              <span className="text-[13px] font-semibold text-[#0a0a0a]">
+                Bs {registro.cobrado}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <p className="text-[11px] text-[#a0a0a0] mt-3">Total gastado: Bs {totalGastado}</p>
+    </div>
+  );
+}
+
+/**
+ * Componente para mostrar información principal del cliente
+ */
+function ClienteHeader({ cliente, visitasCount, totalGastado }) {
+  const initials = cliente.nombre.slice(0, 2).toUpperCase();
+
+  return (
+    <div className="flex flex-col items-center gap-2 pb-4 border-b border-[#f4f4f4]">
+      <div className="w-16 h-16 rounded-full bg-[#0a0a0a] text-white text-[20px] font-semibold flex items-center justify-center">
+        {initials}
+      </div>
+      <p className="text-[16px] font-semibold text-[#0a0a0a]">{cliente.nombre}</p>
+      {cliente.telefono && (
+        <p className="text-[13px] text-[#a0a0a0]">{cliente.telefono}</p>
+      )}
+      <div className="flex gap-2 mt-1">
+        <span className="text-[11px] bg-[#f4f4f4] px-3 py-1 rounded-full text-[#666]">
+          {visitasCount} visitas
+        </span>
+        <span className="text-[11px] bg-[#f4f4f4] px-3 py-1 rounded-full text-[#666]">
+          Bs {totalGastado} total
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -39,52 +149,31 @@ function ClienteDetail({ cliente, registros, servicios, barberos, onClose, onEdi
 
   return (
     <div className="space-y-5">
-      {/* Avatar */}
-      <div className="flex flex-col items-center gap-2 pb-4 border-b border-[#f4f4f4]">
-        <div className="w-16 h-16 rounded-full bg-[#0a0a0a] text-white text-[20px] font-semibold flex items-center justify-center">
-          {cliente.nombre.slice(0,2).toUpperCase()}
-        </div>
-        <p className="text-[16px] font-semibold text-[#0a0a0a]">{cliente.nombre}</p>
-        {cliente.telefono && <p className="text-[13px] text-[#a0a0a0]">{cliente.telefono}</p>}
-        <div className="flex gap-2 mt-1">
-          <span className="text-[11px] bg-[#f4f4f4] px-3 py-1 rounded-full text-[#666]">
-            {historial.length} visitas
-          </span>
-          <span className="text-[11px] bg-[#f4f4f4] px-3 py-1 rounded-full text-[#666]">
-            Bs {totalGastado} total
-          </span>
-        </div>
-      </div>
+      <ClienteHeader
+        cliente={cliente}
+        visitasCount={historial.length}
+        totalGastado={totalGastado}
+      />
 
       {/* Notas */}
       {cliente.notas && (
         <div className="bg-[#fafafa] rounded-xl p-3 border border-[#e8e8e8]">
-          <p className="text-[10px] uppercase tracking-widest text-[#a0a0a0] font-semibold mb-1">Notas</p>
-          <p className="text-[13px] text-[#333] leading-relaxed">{cliente.notas}</p>
+          <p className="text-[10px] uppercase tracking-widest text-[#a0a0a0] font-semibold mb-1">
+            Notas
+          </p>
+          <p className="text-[13px] text-[#333] leading-relaxed">
+            {cliente.notas}
+          </p>
         </div>
       )}
 
       {/* Historial */}
-      {historial.length > 0 && (
-        <div>
-          <p className="text-[10px] uppercase tracking-widest text-[#a0a0a0] font-semibold mb-3">Historial</p>
-          <div className="space-y-2">
-            {historial.slice(0, 6).map(r => {
-              const serv = getServicioById(servicios, r.servicioId);
-              const barb = getBarberoById(barberos, r.barberoId);
-              return (
-                <div key={r.id} className="flex items-center justify-between py-2 border-b border-[#f4f4f4] last:border-0">
-                  <div>
-                    <p className="text-[13px] font-medium text-[#0a0a0a]">{serv?.nombre || 'Servicio'}</p>
-                    <p className="text-[11px] text-[#a0a0a0]">{barb?.nombre} · {formatFecha(r.fin)}</p>
-                  </div>
-                  <span className="text-[13px] font-semibold text-[#0a0a0a]">Bs {r.cobrado}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      <ClienteHistorial
+        cliente={cliente}
+        registros={registros}
+        servicios={servicios}
+        barberos={barberos}
+      />
 
       {/* Acciones */}
       <div className="flex gap-3 pt-1">

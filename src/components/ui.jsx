@@ -62,7 +62,9 @@ export function BtnPrimary({ children, className = '', ...props }) {
       className={`h-12 bg-[#0a0a0a] text-white rounded-xl text-[13px] font-semibold
                   tracking-wide hover:bg-[#333] active:scale-[0.97] transition-all duration-150
                   flex items-center justify-center gap-2 disabled:opacity-40 ${className}`}
-    />
+    >
+      {children}
+    </button>
   );
 }
 
@@ -74,7 +76,9 @@ export function BtnOutline({ children, className = '', ...props }) {
       className={`h-12 border border-[#0a0a0a] text-[#0a0a0a] rounded-xl text-[13px] font-medium
                   tracking-wide hover:bg-[#f4f4f4] active:scale-[0.97] transition-all duration-150
                   flex items-center justify-center gap-2 ${className}`}
-    />
+    >
+      {children}
+    </button>
   );
 }
 
@@ -87,7 +91,9 @@ export function BtnDanger({ children, className = '', ...props }) {
                   text-[12px] font-semibold tracking-wide hover:bg-[#9b2226] hover:text-white
                   active:scale-[0.97] transition-all duration-150
                   flex items-center justify-center gap-1.5 ${className}`}
-    />
+    >
+      {children}
+    </button>
   );
 }
 
