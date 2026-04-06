@@ -1,6 +1,15 @@
 import { useState, useMemo } from 'react';
 import { CalendarDays, Trash2, CheckCircle, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useApp, getClienteById, getBarberoById, getServicioById, formatFecha } from '../context/AppContext';
+import {
+  getTodayDate,
+  getWeekEndDate,
+  filterCitas,
+  countPendingTodayCitas,
+  countPendingCitas,
+  getCitaVariant,
+  getCitaStatusLabel,
+} from '../utils/citasUtils';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { Badge } from '../components/ui';
 
@@ -11,50 +20,39 @@ export default function Citas() {
   const { citas, clientes, barberos, servicios } = state;
 
   const [filtro, setFiltro] = useState('todas');
-  const [confirmDelete, setConfirmDelete]   = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const [confirmAtencion, setConfirmAtencion] = useState(null);
 
-  const hoy = new Date().toISOString().split('T')[0];
-  const semanaFin = (() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 7);
-    return d.toISOString().split('T')[0];
-  })();
+  // Calcular fechas una sola vez
+  const hoy = getTodayDate();
+  const semanaFin = getWeekEndDate();
 
-  const citasFiltradas = useMemo(() => {
-    let lista = [...citas].sort((a, b) => a.fecha.localeCompare(b.fecha));
-    if (filtro === 'hoy')          lista = lista.filter(c => c.fecha === hoy);
-    if (filtro === 'esta semana')  lista = lista.filter(c => c.fecha >= hoy && c.fecha <= semanaFin);
-    if (filtro === 'pendiente')    lista = lista.filter(c => c.estado === 'pendiente');
-    if (filtro === 'atendida')     lista = lista.filter(c => c.estado === 'atendida');
-    return lista;
-  }, [citas, filtro, hoy, semanaFin]);
+  // Filtrar citas según el filtro seleccionado
+  const citasFiltradas = useMemo(
+    () => filterCitas(citas, filtro, hoy, semanaFin),
+    [citas, filtro, hoy, semanaFin]
+  );
 
-  const pendientesHoy = citas.filter(c => c.fecha === hoy && c.estado === 'pendiente').length;
+  // Contar citas pendientes para hoy
+  const pendientesHoy = countPendingTodayCitas(citas, hoy);
 
+  /**
+   * Marca una cita como atendida
+   */
   function marcarAtendida() {
-    dispatch({ type: 'UPDATE_CITA', payload: { ...confirmAtencion, estado: 'atendida' } });
+    dispatch({
+      type: 'UPDATE_CITA',
+      payload: { ...confirmAtencion, estado: 'atendida' },
+    });
     setConfirmAtencion(null);
   }
+
+  /**
+   * Elimina una cita del estado
+   */
   function eliminarCita() {
     dispatch({ type: 'DELETE_CITA', id: confirmDelete });
     setConfirmDelete(null);
-  }
-
-  function isVencida(fecha) {
-    return fecha < hoy;
-  }
-  function getVariant(cita) {
-    if (cita.estado === 'atendida') return 'success';
-    if (isVencida(cita.fecha) && cita.estado === 'pendiente') return 'danger';
-    if (cita.fecha === hoy) return 'warning';
-    return 'default';
-  }
-  function getEstadoLabel(cita) {
-    if (cita.estado === 'atendida') return 'Atendida';
-    if (isVencida(cita.fecha)) return 'Vencida';
-    if (cita.fecha === hoy) return 'Hoy';
-    return 'Pendiente';
   }
 
   return (
@@ -66,9 +64,11 @@ export default function Citas() {
         </h1>
         <p className="text-[12px] text-[#a0a0a0] mt-0.5">
           {pendientesHoy > 0 ? (
-            <span className="text-[#7c4a10] font-medium">{pendientesHoy} cita{pendientesHoy !== 1 ? 's' : ''} para hoy</span>
+            <span className="text-[#7c4a10] font-medium">
+              {pendientesHoy} cita{pendientesHoy !== 1 ? 's' : ''} para hoy
+            </span>
           ) : (
-            `${citas.filter(c => c.estado === 'pendiente').length} pendientes`
+            `${countPendingCitas(citas)} pendientes`
           )}
         </p>
       </div>
@@ -103,7 +103,8 @@ export default function Citas() {
             const cliente  = getClienteById(clientes, cita.clienteId);
             const barbero  = getBarberoById(barberos, cita.barberoId);
             const servicio = getServicioById(servicios, cita.servicioId);
-            const variant  = getVariant(cita);
+            const variant  = getCitaVariant(cita, hoy);
+            const estadoLabel = getCitaStatusLabel(cita, hoy);
 
             return (
               <div
@@ -132,8 +133,10 @@ export default function Citas() {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="text-[14px] font-semibold text-[#0a0a0a] truncate">{cliente?.nombre}</p>
-                      <Badge label={getEstadoLabel(cita)} variant={variant} />
+                      <p className="text-[14px] font-semibold text-[#0a0a0a] truncate">
+                        {cliente?.nombre}
+                      </p>
+                      <Badge label={estadoLabel} variant={variant} />
                     </div>
                     <p className="text-[12px] text-[#666]">
                       {servicio?.nombre} · {barbero?.nombre}

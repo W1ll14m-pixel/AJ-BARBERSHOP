@@ -48,37 +48,70 @@ function buildInitialState() {
   };
 }
 
+/* ─── REDUCER HELPERS ─── */
+/**
+ * Crea una acción ADD genérica para cualquier colección
+ * @param {string} collectionKey - Clave de la colección (ej: 'clientes', 'barberos')
+ * @param {string} idKey - Clave del contador de IDs (ej: 'clientes', 'barberos')
+ * @param {object} payload - Datos a agregar
+ * @param {object} currentState - Estado actual
+ */
+function createAddAction(collectionKey, idKey, payload, currentState) {
+  const nextId = currentState.nextId[idKey] + 1;
+  const newItem = {
+    ...payload,
+    id: currentState.nextId[idKey],
+    ...(idKey === 'clientes' && { creadoEn: new Date().toISOString() }),
+  };
+
+  return {
+    ...currentState,
+    [collectionKey]: [...currentState[collectionKey], newItem],
+    nextId: { ...currentState.nextId, [idKey]: nextId },
+  };
+}
+
+/**
+ * Función auxiliar para actualizar items en cualquier colección
+ */
+function updateItemInCollection(state, collectionKey, itemId, newData) {
+  return {
+    ...state,
+    [collectionKey]: state[collectionKey].map(item =>
+      item.id === itemId ? newData : item
+    ),
+  };
+}
+
+/**
+ * Función auxiliar para eliminar items de cualquier colección
+ */
+function deleteItemFromCollection(state, collectionKey, itemId) {
+  return {
+    ...state,
+    [collectionKey]: state[collectionKey].filter(item => item.id !== itemId),
+  };
+}
+
 /* ─── REDUCER ─── */
 function reducer(state, action) {
   switch (action.type) {
 
     /* BARBEROS */
-    case 'ADD_BARBERO': {
-      const nuevo = { ...action.payload, id: state.nextId.barberos };
-      return {
-        ...state,
-        barberos: [...state.barberos, nuevo],
-        nextId: { ...state.nextId, barberos: state.nextId.barberos + 1 },
-      };
-    }
+    case 'ADD_BARBERO':
+      return createAddAction('barberos', 'barberos', action.payload, state);
     case 'UPDATE_BARBERO':
-      return { ...state, barberos: state.barberos.map(b => b.id === action.payload.id ? action.payload : b) };
+      return updateItemInCollection(state, 'barberos', action.payload.id, action.payload);
     case 'DELETE_BARBERO':
-      return { ...state, barberos: state.barberos.filter(b => b.id !== action.id) };
+      return deleteItemFromCollection(state, 'barberos', action.id);
 
     /* CLIENTES */
-    case 'ADD_CLIENTE': {
-      const nuevo = { ...action.payload, id: state.nextId.clientes, creadoEn: new Date().toISOString() };
-      return {
-        ...state,
-        clientes: [...state.clientes, nuevo],
-        nextId: { ...state.nextId, clientes: state.nextId.clientes + 1 },
-      };
-    }
+    case 'ADD_CLIENTE':
+      return createAddAction('clientes', 'clientes', action.payload, state);
     case 'UPDATE_CLIENTE':
-      return { ...state, clientes: state.clientes.map(c => c.id === action.payload.id ? action.payload : c) };
+      return updateItemInCollection(state, 'clientes', action.payload.id, action.payload);
     case 'DELETE_CLIENTE':
-      return { ...state, clientes: state.clientes.filter(c => c.id !== action.id) };
+      return deleteItemFromCollection(state, 'clientes', action.id);
 
     /* SILLAS – INICIAR SERVICIO */
     case 'INICIAR_SERVICIO': {
