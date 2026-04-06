@@ -1,16 +1,131 @@
-# React + Vite
+# AJ-BARBERSHOP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema de gestión integral para barberías desarrollado con arquitectura por capas. Aplicación fullstack para administrar clientes, barberos, citas, servicios y reportes.
 
-Currently, two official plugins are available:
+## 📋 Descripción
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+AJ-BARBERSHOP es una solución completa de software para la gestión operativa de barberías, permitiendo:
+- Administración de clientes y historial
+- Gestión de barberos y sus especialidades
+- Reserva y seguimiento de citas
+- Gestión de estaciones de trabajo (sillas)
+- Reportes y estadísticas
+- Interfaz responsiva con PWA capabilities
 
-## React Compiler
+## 🏗️ Arquitectura
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Proyecto estructurado en capas siguiendo buenas prácticas de ingeniería de software:
 
-## Expanding the ESLint configuration
+```
+AJ-BARBERSHOP/
+├── src/                # Frontend React
+├── backend/            # Backend Node.js + Express
+│   ├── src/
+│   │   ├── config/     # Configuración
+│   │   ├── controllers/ # Controladores
+│   │   ├── services/   # Servicios
+│   │   ├── models/     # Modelos
+│   │   └── repositories/ # Data Access Layer
+│   └── tests/
+├── database/           # Scripts de BD
+├── docs/               # Documentación
+└── tests/              # Pruebas
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Consulta [docs/architecture.md](docs/architecture.md) para más detalles.
+
+## 🛠️ Tecnologías
+
+### Frontend
+- React 18+
+- Vite (Build tool)
+- Context API (State management)
+
+### Backend
+- Node.js + Express.js
+- MySQL/PostgreSQL
+- JWT Authentication
+
+### Base de Datos
+- MySQL o PostgreSQL
+- Scripts de inicialización (schema.sql, seed.sql)
+
+## 📦 Instalación
+
+### Requisitos previos
+- Node.js 16+
+- npm o yarn
+- MySQL 8+ o PostgreSQL
+
+### Configuración Frontend
+```bash
+npm install
+npm run dev
+```
+
+### Configuración Backend
+```bash
+cd backend
+npm install
+npm start
+```
+
+### Configuración Base de Datos
+```bash
+# Ejecutar schema
+mysql -u root -p aj_barbershop < database/schema.sql
+
+# Cargar datos iniciales (opcional)
+mysql -u root -p aj_barbershop < database/seed.sql
+```
+
+## 🔧 Configuración
+
+Copiar `.env` y ajustar según tu entorno
+
+Variables importantes:
+- `PORT`: Puerto del servidor (default: 3000)
+- `DB_HOST`: Host de la BD
+- `DB_USER`: Usuario de BD
+- `DB_PASSWORD`: Contraseña de BD
+- `JWT_SECRET`: Clave secreta para tokens
+
+## 🚀 Uso
+
+### Desarrollo
+```bash
+# Frontend
+npm run dev
+
+# Backend
+cd backend && npm start
+```
+
+### Construcción para producción
+```bash
+npm run build
+```
+
+## 📝 Control de Versiones
+
+Rama de trabajo: `examen-william-lujan`
+
+### Commits realizados:
+1. **refactor**: Estructura base del proyecto con backend, database y docs
+2. **docs**: Documentación completa de arquitectura
+3. **config**: Configuración de entorno y gitignore
+
+## 📚 Documentación
+
+- [Arquitectura del Sistema](docs/architecture.md)
+- [Convenciones de Código](docs/architecture.md#convenciones-de-código)
+
+## ✅ Convenciones
+
+- **Commits**: feat/, fix/, refactor/, docs/, config/
+- **Nombres**: camelCase (variables), PascalCase (componentes)
+- **Strings**: Mensajes en español
+
+## 📄 Licencia
+
+Proyecto académico - Examen Ingeniería de Software II
