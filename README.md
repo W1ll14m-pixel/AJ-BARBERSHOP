@@ -2,7 +2,7 @@
 
 Sistema de gestión integral para barberías desarrollado con arquitectura por capas. Aplicación fullstack para administrar clientes, barberos, citas, servicios y reportes.
 
-## 📋 Descripción
+## Descripción
 
 AJ-BARBERSHOP es una solución completa de software para la gestión operativa de barberías, permitiendo:
 - Administración de clientes y historial
@@ -12,7 +12,7 @@ AJ-BARBERSHOP es una solución completa de software para la gestión operativa d
 - Reportes y estadísticas
 - Interfaz responsiva con PWA capabilities
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 Proyecto estructurado en capas siguiendo buenas prácticas de ingeniería de software:
 
@@ -34,7 +34,7 @@ AJ-BARBERSHOP/
 
 Consulta [docs/architecture.md](docs/architecture.md) para más detalles.
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 ### Frontend
 - React 18+
@@ -50,7 +50,7 @@ Consulta [docs/architecture.md](docs/architecture.md) para más detalles.
 - MySQL o PostgreSQL
 - Scripts de inicialización (schema.sql, seed.sql)
 
-## 📦 Instalación
+## Instalación
 
 ### Requisitos previos
 - Node.js 16+
@@ -79,7 +79,7 @@ mysql -u root -p aj_barbershop < database/schema.sql
 mysql -u root -p aj_barbershop < database/seed.sql
 ```
 
-## 🔧 Configuración
+## Configuración
 
 Copiar `.env` y ajustar según tu entorno
 
@@ -90,7 +90,7 @@ Variables importantes:
 - `DB_PASSWORD`: Contraseña de BD
 - `JWT_SECRET`: Clave secreta para tokens
 
-## 🚀 Uso
+## Uso
 
 ### Desarrollo
 ```bash
@@ -106,7 +106,7 @@ cd backend && npm start
 npm run build
 ```
 
-## 📝 Control de Versiones
+## Control de Versiones
 
 Rama de trabajo: `examen-william-lujan`
 
@@ -115,16 +115,16 @@ Rama de trabajo: `examen-william-lujan`
 2. **docs**: Documentación completa de arquitectura
 3. **config**: Configuración de entorno y gitignore
 
-## 📚 Documentación
+## Documentación
 
 - [Arquitectura del Sistema](docs/architecture.md)
 - [Convenciones de Código](docs/architecture.md#convenciones-de-código)
 
 ---
 
-## 🔍 ANÁLISIS TÉCNICO - Actividad 2
+## ANÁLISIS TÉCNICO - Actividad 2
 
-### 1️⃣ Tipo de Arquitectura
+### 1. Tipo de Arquitectura
 
 **Arquitectura ACTUAL: Monolítica de Capas (Hybrid)**
 
@@ -150,29 +150,29 @@ Rama de trabajo: `examen-william-lujan`
 ```
 
 **Características:**
-- ✅ **Frontend**: Moderno y responsivo (React + Vite + Tailwind)
-- ✅ **Estado Global**: Context API + useReducer bien implementado
-- ✅ **Routing**: React Router DOM con 6 rutas principales
-- ❌ **Backend**: Estructura base sin implementar
-- ❌ **Persistencia**: localStorage en lugar de BD real
-- ❌ **Autenticación**: No implementada
-- ❌ **API REST**: No existe
+- **Frontend**: Moderno y responsivo (React + Vite + Tailwind)
+- **Estado Global**: Context API + useReducer bien implementado
+- **Routing**: React Router DOM con 6 rutas principales
+- **Backend**: Estructura base sin implementar
+- **Persistencia**: localStorage en lugar de BD real
+- **Autenticación**: No implementada
+- **API REST**: No existe
 
 ---
 
-### 2️⃣ Módulos y Componentes Identificados
+### 2. Módulos y Componentes Identificados
 
 #### **Frontend (React)**
 
 **Páginas (6 módulos):**
 | Módulo | Funcionalidad | Estado |
 |--------|---------------|--------|
-| `Dashboard.jsx` | Panel principal con estadísticas diarias | ✅ Implementado |
-| `Clientes.jsx` | CRUD de clientes | ✅ Implementado |
-| `Barberos.jsx` | CRUD de barberos | ✅ Implementado |
-| `Citas.jsx` | Gestión de citas/reservas | ✅ Implementado |
-| `Sillas.jsx` | Control de ocupación de estaciones | ✅ Implementado |
-| `Reportes.jsx` | Reportes y estadísticas | ✅ Implementado |
+| `Dashboard.jsx` | Panel principal con estadísticas diarias | Implementado |
+| `Clientes.jsx` | CRUD de clientes | Implementado |
+| `Barberos.jsx` | CRUD de barberos | Implementado |
+| `Citas.jsx` | Gestión de citas/reservas | Implementado |
+| `Sillas.jsx` | Control de ocupación de estaciones | Implementado |
+| `Reportes.jsx` | Reportes y estadísticas | Implementado |
 
 **Componentes Reutilizables:**
 - `Layout.jsx` - Estructura base con header y navegación
@@ -212,9 +212,9 @@ Scripts SQL creados:
 
 ---
 
-### 3️⃣ Mejoras Arquitectónicas Propuestas
+### 3. Mejoras Arquitectónicas Propuestas
 
-#### **🔴 Prioridad ALTA**
+#### Prioridad ALTA
 
 1. **Conectar Backend Real**
    ```javascript
@@ -246,7 +246,7 @@ Scripts SQL creados:
    - Proteger rutas con middleware
    - Almacenar tokens con seguridad
 
-#### **🟡 Prioridad MEDIA**
+#### Prioridad MEDIA
 
 5. **Custom Hooks para Lógica Reutilizable**
    ```javascript
@@ -279,7 +279,7 @@ Scripts SQL creados:
    - Interfaces para Clientes, Barberos, Citas, etc.
    - Mejor autocompletado y detección de errores
 
-#### **🟢 Prioridad MEDIA-BAJA**
+#### Prioridad MEDIA-BAJA
 
 9. **Pruebas Automatizadas**
    ```bash
@@ -306,26 +306,26 @@ Scripts SQL creados:
 
 ---
 
-### 📊 Matriz de Madurez Actual
+### Matriz de Madurez Actual
 
 | Aspecto | Madurez | Detalle |
-|---------|---------|---------|
-| **Frontend** | 🟢 Alta | React moderno, componentes bien estructurados |
-| **Backend** | 🔴 Nula | Estructura sin lógica implementada |
-| **BD** | 🟡 Mediana | Schema correcto, no conectada |
-| **Testing** | 🔴 Nula | Sin pruebas automatizadas |
-| **Documentación** | 🟡 Mediana | README y architecture.md creados |
-| **Seguridad** | 🔴 Nula | Sin autenticación |
-| **Escalabilidad** | 🟡 Mediana | Arquitectura preparada para crecer |
+|---------|---------|----------|
+| **Frontend** | Alta | React moderno, componentes bien estructurados |
+| **Backend** | Nula | Estructura sin lógica implementada |
+| **BD** | Mediana | Schema correcto, no conectada |
+| **Testing** | Nula | Sin pruebas automatizadas |
+| **Documentación** | Mediana | README y architecture.md creados |
+| **Seguridad** | Nula | Sin autenticación |
+| **Escalabilidad** | Mediana | Arquitectura preparada para crecer |
 
 ---
 
-### ✅ Convenciones
+### Convenciones
 
 - **Commits**: feat/, fix/, refactor/, docs/, config/
 - **Nombres**: camelCase (variables), PascalCase (componentes)
 - **Strings**: Mensajes en español
 
-## 📄 Licencia
+## Licencia
 
 Proyecto académico - Examen Ingeniería de Software II
