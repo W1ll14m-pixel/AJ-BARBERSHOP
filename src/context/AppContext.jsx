@@ -31,9 +31,7 @@ function loadState() {
 }
 
 function buildInitialState() {
-  const saved = loadState();
-  if (saved) return saved;
-  return {
+  const baseState = {
     barberos: INITIAL_BARBEROS,
     servicios: INITIAL_SERVICIOS,
     clientes: INITIAL_CLIENTES,
@@ -44,7 +42,23 @@ function buildInitialState() {
     })),
     registros: [],   // historial completo de servicios terminados
     citas: [],       // próximas citas agendadas
-    nextId: { barberos: 4, clientes: 4, citas: 1, registros: 1 },
+    tareas: [],
+    nextId: { barberos: 4, clientes: 4, citas: 1, registros: 1, tareas: 1 },
+  };
+
+  const saved = loadState();
+  if (!saved) return baseState;
+
+  // Compatibilidad con estados guardados de versiones anteriores.
+  return {
+    ...baseState,
+    ...saved,
+    tareas: saved.tareas ?? baseState.tareas,
+    nextId: {
+      ...baseState.nextId,
+      ...(saved.nextId || {}),
+      tareas: saved.nextId?.tareas ?? baseState.nextId.tareas,
+    },
   };
 }
 
@@ -164,6 +178,39 @@ function reducer(state, action) {
       return { ...state, citas: state.citas.map(c => c.id === action.payload.id ? action.payload : c) };
     case 'DELETE_CITA':
       return { ...state, citas: state.citas.filter(c => c.id !== action.id) };
+
+    /* TAREAS */
+    case 'ADD_TAREA': {
+      const titulo = action.payload?.titulo?.trim();
+      if (!titulo) return state;
+
+      const nuevaTarea = {
+        id: state.nextId.tareas,
+        titulo,
+        completada: false,
+        creadaEn: new Date().toISOString(),
+        completadaEn: null,
+      };
+
+      return {
+        ...state,
+        tareas: [nuevaTarea, ...state.tareas],
+        nextId: { ...state.nextId, tareas: state.nextId.tareas + 1 },
+      };
+    }
+    case 'TOGGLE_TAREA':
+      return {
+        ...state,
+        tareas: state.tareas.map(t =>
+          t.id === action.id
+            ? {
+              ...t,
+              completada: !t.completada,
+              completadaEn: !t.completada ? new Date().toISOString() : null,
+            }
+            : t
+        ),
+      };
 
     default: return state;
   }

@@ -7,6 +7,7 @@ import Clientes from './pages/Clientes';
 import Barberos from './pages/Barberos';
 import Citas from './pages/Citas';
 import Reportes from './pages/Reportes';
+import Tareas from './pages/Tareas';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/clientes"   element={<Clientes />} />
             <Route path="/barberos"   element={<Barberos />} />
             <Route path="/citas"      element={<Citas />} />
+            <Route path="/tareas"     element={<Tareas />} />
             <Route path="/reportes"   element={<Reportes />} />
           </Routes>
         </Layout>
